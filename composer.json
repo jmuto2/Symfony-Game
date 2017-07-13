@@ -19,7 +19,7 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "php": ">=7.0",
+        "php": "^7.0",
         "symfony/symfony": "3.2.*",
         "doctrine/orm": "^2.5",
         "doctrine/doctrine-bundle": "^1.6",
@@ -30,7 +30,7 @@
         "sensio/distribution-bundle": "^5.0",
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "^2.0",
-        "twig/twig": "^1.0||^2.0"
+        "twig/twig": "~1.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
@@ -63,5 +63,11 @@
             "file": "app/config/parameters.yml"
         },
         "branch-alias": null
+    },
+    "config": {
+        "preferred-install": "dist",
+        "platform": {
+            "php": "7.0"
+        }
     }
 }
