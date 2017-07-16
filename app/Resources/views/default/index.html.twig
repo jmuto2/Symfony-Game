@@ -3,10 +3,9 @@
 {% block content %}
   
   <div id="app" style="border-radius: 10px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-    <h1 style="text-align: center;">Lets play!!</h1>
-    
+    <h4 style="text-align: center;">Lets play Rock, Paper, Scissors, Spock, Lizard</h4>
     <div class="row">
-      <div class="col m4" style="text-align: center">
+      <div class="col m4" style="text-align: center; padding-top: 20px;">
         <h5>
           Computer
         </h5>
@@ -29,29 +28,27 @@
         </h5>
         <img src="http://www.cartoonbucket.com/wp-content/uploads/2015/08/Spongebob-Weared-Big-Specs.jpg" alt="Spongebob Weared Big Specs" style="height:100px;">
         <br>
-        <button id="play" type="submit" class="btn btn-med blue waves-effect" style="margin-top: 20px;" onclick="play()" disabled>Play Again</button>
+        <button id="play_again" type="submit" class="btn btn-med blue waves-effect" style="margin-top: 20px;" onclick="play_again()" disabled>Play Again</button>
       </div>
     </div>
     
     <div id="option-btns" class="row" style="text-align: center">
       <label>Choose One</label>
       <div>
-        <button id="rock" type="submit" class="btn btn-med blue waves-effect" onclick="shoot(this.id)">Rock</button>
-        <button id="paper" type="submit" class="btn btn-med blue waves-effect" onclick="shoot(this.id)">Paper</button>
-        <button id="scissors" type="submit" class="btn btn-med blue waves-effect" onclick="shoot(this.id)">Scissors</button>
-        <button id="spock" type="submit" class="btn btn-med blue waves-effect" onclick="shoot(this.id)">Spock</button>
-        <button id="lizard" type="submit" class="btn btn-med blue waves-effect" onclick="shoot(this.id)">Lizard</button>
+        <button id="1" type="submit" class="btn btn-med blue waves-effect" onclick="shoot(this.id)">Rock</button>
+        <button id="2" type="submit" class="btn btn-med blue waves-effect" onclick="shoot(this.id)">Paper</button>
+        <button id="3" type="submit" class="btn btn-med blue waves-effect" onclick="shoot(this.id)">Scissors</button>
+        <button id="4" type="submit" class="btn btn-med blue waves-effect" onclick="shoot(this.id)">Spock</button>
+        <button id="5" type="submit" class="btn btn-med blue waves-effect" onclick="shoot(this.id)">Lizard</button>
       </div>
     </div>
     
     <div class="row" style="text-align: -webkit-center;">
       <div class="m12" style="text-align: -webkit-center; width: 80%;">
         <table id="table" class="table table-striped" style="display: none">
-          <thead>
           <tr>
             <th>Player</th>
             <th>Games</th>
-            <th>Ties</th>
             <th>Wins</th>
             <th>Losses</th>
             <th>Rock</th>
@@ -60,73 +57,57 @@
             <th>Spock</th>
             <th>Lizard</th>
           </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>Player</td>
-            <td>10</td>
-            <td>2</td>
-            <td>5</td>
-            <td>3</td>
-            <td>3</td>
-            <td>2</td>
-            <td>1</td>
-            <td>3</td>
-            <td>2</td>
-          </tr>
-          <tr>
-            <td>Computer</td>
-            <td>10</td>
-            <td>2</td>
-            <td>3</td>
-            <td>5</td>
-            <td>2</td>
-            <td>1</td>
-            <td>3</td>
-            <td>2</td>
-            <td>3</td>
-          </tr>
-          </tbody>
         </table>
       </div>
     </div>
-
+  
   </div>
   
   <script>
-    var options = ['rock', 'paper', 'scissors', 'spock', 'lizard'];
-    var computer_option = '';
-    var player_option = '';
-    
-		function play() {
-			alert(getComputersOption());
-			document.getElementById("play").disabled = true;
+		var options = ['Rock', 'Paper', 'Scissors', 'Spock', 'Lizard'];
+		var computer_option = '';
+		var index = null;
+		var player_option = '';
+		
+		function play_again() {
+			$('#computer').text('');
+			document.getElementById("play_again").disabled = true;
 			document.getElementById("option-btns").style.visibility = "visible";
-			$('#computer').text('').css("visibility", "hidden");
 			$('#result').text('').css("visibility", "hidden");
 			$('#winner').text('').css("visibility", "hidden");
 		}
 		
 		function shoot(id) {
-			alert(getComputersOption());
-			$('#computer').text('Paper').css("visibility", "visible");
-			document.getElementById("play").disabled = false;
+			getComputersOption();
+			$('#computer').text(computer_option).css("visibility", "visible");
+			document.getElementById("play_again").disabled = false;
 			document.getElementById("option-btns").style.visibility = "hidden";
+			
+			saveGame(id);
 			$('#table').show();
-			$('#result').text('Paper covers Rock').css("visibility", "visible");
-			$('#winner').text('Player Wins').css("visibility", "visible");
 		}
 		
 		var getComputersOption = function() {
-			computer_option = Math.floor((Math.random() * 5));
-			
-			for (var i = 0; i < options.length; i++) {
-				someFn(arr[i]);
-			}
-			
-			return computer_option;
+			index = Math.floor((Math.random() * 4));
+      computer_option = options[index];
 		}
-    
+		
+		var saveGame = function (id) {
+			var url = "save_game";
+			var data = {
+				data: {
+					computer_option: index + 1,
+					player_option: id
+				}
+			};
+			
+			$.post(url, data, function(result){
+				console.log(result);
+				$('#result').text(result['result']).css("visibility", "visible");
+				$('#winner').text(result['winner']+' Wins').css("visibility", "visible");
+			}.bind(this), 'json');
+		}
+  
   </script>
 {% endblock %}
 
