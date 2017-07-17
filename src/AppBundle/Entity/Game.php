@@ -1,4 +1,5 @@
 <?php
+
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -17,27 +18,27 @@ class Game
 	 * @ORM\Id
 	 * @ORM\GeneratedValue(strategy="AUTO")
 	 */
-    private $id;
+	private $id;
 	
 	/**
 	 * @ORM\Column(type="integer")
 	 */
-    private $winner_id;
+	private $winner_id;
 	
 	/**
 	 * @ORM\Column(type="integer")
 	 */
-    private $loser_id;
+	private $loser_id;
 	
 	/**
 	 * @ORM\Column(type="integer")
 	 */
-    private $winning_option_id;
+	private $winning_option_id;
 	
 	/**
 	 * @ORM\Column(type="integer")
 	 */
-    private $losing_option_id;
+	private $losing_option_id;
 	
 	/**
 	 * @return int

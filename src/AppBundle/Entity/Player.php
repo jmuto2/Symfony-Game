@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  *
  * @ORM\Entity
  * @ORM\Table(name="players",
- *	 uniqueConstraints={@UniqueConstraint(name="name_unique",columns={"name"})},
+ *     uniqueConstraints={@UniqueConstraint(name="name_unique",columns={"name"})},
  *)
  */
 class Player
@@ -52,7 +52,8 @@ class Player
 		$this->name = $name;
 	}
 	
-	public function __toString() {
-		return (string) $this->name;
+	public function __toString()
+	{
+		return (string)$this->name;
 	}
 }

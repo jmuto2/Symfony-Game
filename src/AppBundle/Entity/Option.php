@@ -1,4 +1,5 @@
 <?php
+
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -43,7 +44,8 @@ class Option
 		$this->name = $name;
 	}
 	
-	public function __toString() {
-		return (string) $this->name;
+	public function __toString()
+	{
+		return (string)$this->name;
 	}
 }

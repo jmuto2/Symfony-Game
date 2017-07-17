@@ -1,4 +1,5 @@
 <?php
+
 namespace AppBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
@@ -8,10 +9,10 @@ class PlayerGameRepository extends EntityRepository
 	public function findTotalsByGame()
 	{
 		$qb = $this->getEntityManager()->createQueryBuilder();
-
+		
 		$player_options = [];
 		
-		$results =  $qb->select('pg')
+		$results = $qb->select('pg')
 			->from('AppBundle:PlayerGame', 'pg')
 			->innerJoin('AppBundle:Option', 'o', 'WITH', 'o.id = pg.option_id')
 			->innerJoin('AppBundle:Player', 'p', 'WITH', 'p.id = pg.player_id')
@@ -19,13 +20,13 @@ class PlayerGameRepository extends EntityRepository
 			->groupBy('pg.player_id, pg.option_id')
 			->getQuery()->getArrayResult();
 		
-		for($i = 0; $i < count($results); $i++) {
+		for ($i = 0; $i < count($results); $i++) {
 			$data = [
 				'option' => $results[$i]['option'],
-				'played' => (int) $results[$i]['played']
+				'played' => (int)$results[$i]['played']
 			];
 			
-			if ($results[$i]['player'] == 'Player'){
+			if ($results[$i]['player'] == 'Player') {
 				$player_options['Player'][$i] = $data;
 			} else {
 				$player_options['Computer'][$i] = $data;

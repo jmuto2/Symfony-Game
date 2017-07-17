@@ -1,4 +1,5 @@
 <?php
+
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  *
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ScoringRepository")
  * @ORM\Table(name="scoring",
- * 		uniqueConstraints={@UniqueConstraint(name="search_idx", columns={"option_a", "option_b"})})
+ *        uniqueConstraints={@UniqueConstraint(name="search_idx", columns={"option_a", "option_b"})})
  *)
  */
 class Scoring
@@ -84,7 +85,8 @@ class Scoring
 		$this->option_b = $option_b;
 	}
 	
-	public function __toString() {
-		return (string) $this->result;
+	public function __toString()
+	{
+		return (string)$this->result;
 	}
 }
