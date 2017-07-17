@@ -16,44 +16,44 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  */
 class Player
 {
-	/**
-	 * @ORM\Column(type="integer")
-	 * @ORM\Id
-	 * @ORM\GeneratedValue(strategy="AUTO")
-	 */
-	private $id;
-	
-	/**
-	 * @ORM\Column(type="string", length=100)
-	 */
-	private $name;
-	
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-	
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return $this->name;
-	}
-	
-	/**
-	 * @param string $name
-	 */
-	public function setName($name)
-	{
-		$this->name = $name;
-	}
-	
-	public function __toString()
-	{
-		return (string)$this->name;
-	}
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+    
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $name;
+    
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+    
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+    
+    public function __toString()
+    {
+        return (string)$this->name;
+    }
 }
