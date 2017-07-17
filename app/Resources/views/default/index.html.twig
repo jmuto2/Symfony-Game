@@ -46,17 +46,20 @@
     <div class="row" style="text-align: -webkit-center;">
       <div class="m12" style="text-align: -webkit-center; width: 80%;">
         <table id="table" class="table table-striped" style="display: none">
-          <tr>
-            <th>Player</th>
-            <th>Games</th>
-            <th>Wins</th>
-            <th>Losses</th>
-            <th>Rock</th>
-            <th>Paper</th>
-            <th>Scissors</th>
-            <th>Spock</th>
-            <th>Lizard</th>
-          </tr>
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Wins</th>
+              <th>Rock</th>
+              <th>Paper</th>
+              <th>Scissors</th>
+              <th>Spock</th>
+              <th>Lizard</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr></tr>
+          </tbody>
         </table>
       </div>
     </div>
@@ -88,9 +91,9 @@
 		}
 		
 		var getComputersOption = function() {
-			index = Math.floor((Math.random() * 4));
+			index = Math.floor((Math.random() * 4) +1);
       computer_option = options[index];
-		}
+		};
 		
 		var saveGame = function (id) {
 			var url = "save_game";
@@ -102,7 +105,52 @@
 			};
 			
 			$.post(url, data, function(result){
-				console.log(result);
+				if (result['option_played'] === null) {
+					$('#result').text(result['result']).css("visibility", "visible");
+					$('#winner').text(result['winner']+' Wins').css("visibility", "visible");
+					return;
+        }
+        var computer = {
+					'player': 'Computer',
+          'wins': result['computer_wins']
+        };
+				
+				var player = {
+					'player': 'Player',
+          'wins': result['player_wins']
+        };
+				
+        $('#table tbody > tr').remove();
+				$.each(Object.keys(result['options_played']), function( index, value ) {
+					$.each(Object.keys(result['options_played'][value]), function( player_index, player_value ) {
+						if (player_value === 'undefined') player_value = 0;
+            if (value === 'Computer') {
+							computer[result['options_played'][value][player_value]['option']] = result['options_played'][value][player_value]['played'];
+						} else {
+							player[result['options_played'][value][player_value]['option']] = result['options_played'][value][player_value]['played'];
+						}
+					});
+        });
+				$('#table > tbody').append(
+					'<tr>'
+					+'<td>'+computer['player']+'</td>'
+					+'<td>'+computer['wins']+'</td>'
+					+'<td>'+computer['rock']+'</td>'
+					+'<td>'+computer['paper']+'</td>'
+					+'<td>'+computer['scissors']+'</td>'
+					+'<td>'+computer['spock']+'</td>'
+					+'<td>'+computer['lizard']+'</td>'
+					+'</tr>');
+				$('#table > tbody').append(
+					'<tr>'
+					+'<td>'+player['player']+'</td>'
+					+'<td>'+player['wins']+'</td>'
+					+'<td>'+player['rock']+'</td>'
+					+'<td>'+player['paper']+'</td>'
+					+'<td>'+player['scissors']+'</td>'
+					+'<td>'+player['spock']+'</td>'
+					+'<td>'+player['lizard']+'</td>'
+					+'</tr>');
 				$('#result').text(result['result']).css("visibility", "visible");
 				$('#winner').text(result['winner']+' Wins').css("visibility", "visible");
 			}.bind(this), 'json');

@@ -3,8 +3,10 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Option;
 use AppBundle\Entity\Player;
+use AppBundle\Entity\PlayerGame;
 use AppBundle\Entity\Scoring;
 use AppBundle\Entity\Game;
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,8 +28,10 @@ class GameController extends Controller
 	public function saveGameResult(Request $request)
 	{
 		$data = (object)$request->request->get('data');
+		
 		if ($data->computer_option === $data->player_option) {
 			return new JsonResponse([
+				'option_played' => null,
 				'result' => 'Tie Game, try again',
 				'winner' => 'Nobody'
 			]);
@@ -44,18 +48,19 @@ class GameController extends Controller
 	
 	/**
 	 * @param object $data
+	 *
 	 * @return array
 	 */
 	private function savePlayersResult($data)
 	{
 		$em = $this->getDoctrine()->getManager();
-		$result = $em->getRepository(Scoring::class)->findResult($data);
-		list($player, $computer) = $this->getPlayers($data, $em);
+		$scored = $em->getRepository(Scoring::class)->findResult($data);
+		list($player, $computer) = $this->getPlayers();
 
 		$game = new Game();
-		$game->setWinningOptionId($result[0]['option_a']);
-		$game->setLosingOptionId($result[0]['option_b']);
-		if ($result[0]['option_a'] === (int) $data->computer_option) {
+		$game->setWinningOptionId($scored[0]['option_a']);
+		$game->setLosingOptionId($scored[0]['option_b']);
+		if ($scored[0]['option_a'] === (int) $data->computer_option) {
 			$game->setWinnerId($computer->getId());
 			$game->setLoserId($player->getId());
 		} else {
@@ -66,11 +71,17 @@ class GameController extends Controller
 		$em->persist($game);
 		$em->flush();
 		
+		$this->saveOptionsByGame([$computer->getId(), $player->getId()], [$data->computer_option, $data->player_option], $game->getId());
+		$options_played = $em->getRepository(PlayerGame::class)->findTotalsByGame();
+		$totals = $em->getRepository(Game::class)->findResultsByGame([$player->getId(), $computer->getId()]);
 		$winner = $computer->getId() === $game->getWinnerId() ? $computer->getName() : $player->getName();
 		
 		return [
-			'result' =>$result[0]['result'],
-			'winner' => $winner
+			'result' => $scored[0]['result'],
+			'winner' => $winner,
+			'options_played' => $options_played,
+			'computer_wins' => $totals[1][1],
+			'player_wins' => $totals[0][1]
 		];
 	}
 	
@@ -145,11 +156,29 @@ class GameController extends Controller
 	}
 	
 	/**
-	 * @param $data
-	 * @param $em
+	 * @param array $ids
+	 * @param array $options
+	 * @param int $game_id
+	 */
+	private function saveOptionsByGame(array $ids, array $options, $game_id)
+	{
+		$em = $this->getDoctrine()->getManager();
+		
+		for ($i = 0; $i < count($ids); ++$i) {
+			$played_options = new PlayerGame();
+			$played_options->setGameId($game_id);
+			$played_options->setPlayerId($ids[$i]);
+			$played_options->setOptionId($options[$i]);
+			$em->persist($played_options);
+		}
+		$em->flush();
+		$em->clear();
+	}
+	
+	/***
 	 * @return array
 	 */
-	private function getPlayers($data, $em)
+	private function getPlayers()
 	{
 		$player_repository = $this->getDoctrine()->getRepository(Player::class);
 		$player = $player_repository->findOneByName('Player');
