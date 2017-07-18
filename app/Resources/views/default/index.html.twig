@@ -129,7 +129,6 @@
         $('#table tbody > tr').remove();
         $.each(Object.keys(result['options_played']), function (index, value) {
           $.each(Object.keys(result['options_played'][value]), function (player_index, player_value) {
-            if (player_value === 'undefined') player_value = 0;
             if (value === 'Computer') {
               computer[result['options_played'][value][player_value]['option']] = result['options_played'][value][player_value]['played'];
             } else {
